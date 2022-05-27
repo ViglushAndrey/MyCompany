@@ -1,14 +1,19 @@
 package com.example.mycompany.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Entity(name = "collaborator")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Collaborator {
 
     @Id
@@ -18,18 +23,11 @@ public class Collaborator {
     private String position;
     private String tel;
 
-    @OneToOne
-    @JoinColumn(name = "auto_id")
-    private Auto auto;
-    @OneToOne
-    @JoinColumn(name = "moto_id")
-    private Moto moto;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "collaborators",  fetch = FetchType.EAGER)
+    private Set<Rental> rental;
 
-    @OneToOne
-    @JoinColumn(name = "rental_id")
-    private Rental rental;
-
-    @OneToOne
-    @JoinColumn(name = "sales_id")
-    private Sales sales;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "collaborator",  fetch = FetchType.EAGER)
+    private Set<Sales> sale;
 }

@@ -1,38 +1,120 @@
 package com.example.mycompany.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
-@Data
+
 @Entity(name = "sales")
+@Builder
 public class Sales {
 
     @Id
     private Long id;
 
-    @OneToMany(mappedBy = "sales")
-    private Set<Auto> auto;
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "auto_id")
+    private Auto auto;
 
-    @OneToMany(mappedBy = "sales")
-    private Set<Moto> moto;
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "moto_id")
+    private Moto moto;
 
-    @OneToOne(mappedBy = "sales")
+    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToOne(mappedBy = "sales")
+    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "collaborator_id")
     private Collaborator collaborator;
 
-    @JsonSerialize(using = LocalTimeSerializer.class)
-    @JsonDeserialize(using = LocalTimeDeserializer.class)
-    private LocalTime dayOfSale;
+    private LocalDate dayOfSale;
+
+    public Sales() {
+    }
+
+    public Sales(Long id, Auto auto, Moto moto, Client client, Collaborator collaborator, LocalDate dayOfSale) {
+        this.id = id;
+        this.auto = auto;
+        this.moto = moto;
+        this.client = client;
+        this.collaborator = collaborator;
+        this.dayOfSale = dayOfSale;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Auto getAuto() {
+        return auto;
+    }
+
+    public void setAuto(Auto auto) {
+        this.auto = auto;
+    }
+
+    public Moto getMoto() {
+        return moto;
+    }
+
+    public void setMoto(Moto moto) {
+        this.moto = moto;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Collaborator getCollaborator() {
+        return collaborator;
+    }
+
+    public void setCollaborator(Collaborator collaborator) {
+        this.collaborator = collaborator;
+    }
+
+    public LocalDate getDayOfSale() {
+        return dayOfSale;
+    }
+
+    public void setDayOfSale(LocalDate dayOfSale) {
+        this.dayOfSale = dayOfSale;
+    }
+
+    @Override
+    public String toString() {
+        return "Sales{" +
+                "id=" + id +
+                ", auto=" + auto +
+                ", moto=" + moto +
+                ", client=" + client +
+                ", collaborator=" + collaborator +
+                ", dayOfSale=" + dayOfSale +
+                '}';
+    }
 }

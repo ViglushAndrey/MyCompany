@@ -1,13 +1,19 @@
 package com.example.mycompany.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Data
+
 @Entity(name = "moto")
+@Builder
+
 public class Moto {
 
     @Id
@@ -20,22 +26,128 @@ public class Moto {
     private String bodyType;
     private String yearOfTheMoto;
 
-    @OneToMany(mappedBy = "moto")
-    private Set<Mark> motoMark;
-    @OneToMany(mappedBy = "moto")
-    private Set<Model> motoModel;
+    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "motoModel_id")
+    private Model motoModel;
 
-    @OneToOne(mappedBy = "moto")
-    private Client clients;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "moto", fetch = FetchType.EAGER)
+    private Set<Rental> rental;
 
-    @OneToOne(mappedBy = "moto")
-    private Collaborator collaborator;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "moto", fetch = FetchType.EAGER)
+    private Set<Sales> sales;
 
-    @ManyToOne
-    @JoinColumn(name = "rental_id")
-    private Rental rental;
+    public Moto() {
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "sales_id")
-    private Sales sales;
+    public Moto(Long id, String registrationNumber, String fuelType, String numberOfSeats, String bodyColor, String bodyType, String yearOfTheMoto, Model motoModel, Set<Rental> rental, Set<Sales> sales) {
+        this.id = id;
+        this.registrationNumber = registrationNumber;
+        this.fuelType = fuelType;
+        this.numberOfSeats = numberOfSeats;
+        this.bodyColor = bodyColor;
+        this.bodyType = bodyType;
+        this.yearOfTheMoto = yearOfTheMoto;
+        this.motoModel = motoModel;
+        this.rental = rental;
+        this.sales = sales;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public void setRegistrationNumber(String registrationNumber) {
+        this.registrationNumber = registrationNumber;
+    }
+
+    public String getFuelType() {
+        return fuelType;
+    }
+
+    public void setFuelType(String fuelType) {
+        this.fuelType = fuelType;
+    }
+
+    public String getNumberOfSeats() {
+        return numberOfSeats;
+    }
+
+    public void setNumberOfSeats(String numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
+    }
+
+    public String getBodyColor() {
+        return bodyColor;
+    }
+
+    public void setBodyColor(String bodyColor) {
+        this.bodyColor = bodyColor;
+    }
+
+    public String getBodyType() {
+        return bodyType;
+    }
+
+    public void setBodyType(String bodyType) {
+        this.bodyType = bodyType;
+    }
+
+    public String getYearOfTheMoto() {
+        return yearOfTheMoto;
+    }
+
+    public void setYearOfTheMoto(String yearOfTheMoto) {
+        this.yearOfTheMoto = yearOfTheMoto;
+    }
+
+    public Model getMotoModel() {
+        return motoModel;
+    }
+
+    public void setMotoModel(Model motoModel) {
+        this.motoModel = motoModel;
+    }
+
+    public Set<Rental> getRental() {
+        return rental;
+    }
+
+    public void setRental(Set<Rental> rental) {
+        this.rental = rental;
+    }
+
+    public Set<Sales> getSales() {
+        return sales;
+    }
+
+    public void setSales(Set<Sales> sales) {
+        this.sales = sales;
+    }
+
+    @Override
+    public String toString() {
+        return "Moto{" +
+                "id=" + id +
+                ", registrationNumber='" + registrationNumber + '\'' +
+                ", fuelType='" + fuelType + '\'' +
+                ", numberOfSeats='" + numberOfSeats + '\'' +
+                ", bodyColor='" + bodyColor + '\'' +
+                ", bodyType='" + bodyType + '\'' +
+                ", yearOfTheMoto='" + yearOfTheMoto + '\'' +
+                ", motoModel=" + motoModel +
+                ", rental=" + rental +
+                ", sales=" + sales +
+                '}';
+    }
 }

@@ -1,14 +1,15 @@
 package com.example.mycompany.model;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Builder;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.Set;
 
-@Data
-@Entity(name = "modelies")
+
+@Entity(name = "model")
+@Builder
+
 public class Model {
 
     @Id
@@ -16,10 +17,85 @@ public class Model {
 
     private String carModel;
 
-    @ManyToOne
-    @JoinColumn(name = "auto_id")
-    private Auto auto;
-    @ManyToOne
-    @JoinColumn(name = "moto_id")
-    private Moto moto;
+    @JsonBackReference
+    @OneToMany(mappedBy = "carModel", fetch = FetchType.EAGER)
+    private Set<Auto> auto;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "motoModel", fetch = FetchType.EAGER)
+    private Set<Moto> moto;
+
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "mark_id")
+    private Mark mark;
+
+    public Model() {
+    }
+
+    public Model(Long id, String carModel, Set<Auto> auto, Set<Moto> moto, Mark mark) {
+        this.id = id;
+        this.carModel = carModel;
+        this.auto = auto;
+        this.moto = moto;
+        this.mark = mark;
+    }
+
+    public Model(String carModel, Set<Auto> auto, Set<Moto> moto, Mark mark) {
+        this.carModel = carModel;
+        this.auto = auto;
+        this.moto = moto;
+        this.mark = mark;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCarModel() {
+        return carModel;
+    }
+
+    public void setCarModel(String carModel) {
+        this.carModel = carModel;
+    }
+
+    public Set<Auto> getAuto() {
+        return auto;
+    }
+
+    public void setAuto(Set<Auto> autos) {
+        this.auto = autos;
+    }
+
+    public Set<Moto> getMoto() {
+        return moto;
+    }
+
+    public void setMoto(Set<Moto> motos) {
+        this.moto = motos;
+    }
+
+    public Mark getMark() {
+        return mark;
+    }
+
+    public void setMark(Mark mark) {
+        this.mark = mark;
+    }
+
+    @Override
+    public String toString() {
+        return "Model{" +
+                "id=" + id +
+                ", carModel='" + carModel + '\'' +
+                ", autos=" + auto +
+                ", motos=" + moto +
+                ", mark=" + mark +
+                '}';
+    }
 }
